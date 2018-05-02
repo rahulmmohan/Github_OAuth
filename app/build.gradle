@@ -19,6 +19,10 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+        all {
+            buildConfigField 'String', 'GITHUB_ID', '"GITHUB_CLIENT"'
+            buildConfigField 'String', 'GITHUB_SECRET', '"GITHUB_SECRET"'
+        }
     }
 }
 
@@ -30,5 +34,6 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
-    implementation project(':github-oauth')
+    implementation 'com.github.rahul:github-oauth:1.0'
+
 }
