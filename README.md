@@ -2,6 +2,9 @@
 <img src="https://github.com/rahulmmohan/Github_OAuth/blob/master/screenshots/login.png" width=200px/>                               <img src="https://github.com/rahulmmohan/Github_OAuth/blob/master/screenshots/authorize.png" width=200px/> 
 
 The Github_OAuth library helps to easily add a GitHub's OAuth implementation flow to your Android application.It will open a new Dialog Fragment with webview and user token will be returned on callback.
+
+Find more about [GitHub's OAuth implementation](https://developer.github.com/v3/guides/basics-of-authentication/#registering-your-app)
+
 # Setup
 ## Include in your project
 
