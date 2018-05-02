@@ -1,10 +1,44 @@
 apply plugin: 'com.android.library'
+allprojects {
+    tasks.withType(Javadoc) {
+        enabled = false
+    }
+}
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:1.1.0'
+    }
+}
+ext {
+    bintrayRepo = 'Github_OAuth2_Android_Library' // your repo name
+    bintrayName = 'github-oauth' // has to be same as your library module name
+
+    publishedGroupId = 'com.github.rahul' // your module package name
+    libraryName = 'github-oauth'
+    artifact = 'github-oauth' // has to be same as your library module name
+
+    libraryDescription = 'Android library to access Github APIs'
+
+    siteUrl = 'https://github.com/rahulmmohan/Github_OAuth'
+    gitUrl = 'https://github.com/rahulmmohan/Github_OAuth.git'
+    
+    libraryVersion = '1.0'
+
+    developerId = 'rahulmmohan'
+    developerName = 'Rahul M Mohan'
+    developerEmail = 'rahulmohanpgr@gmail.com'
+
+    licenseName = 'The Apache Software License, Version 2.0'
+    licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+    allLicenses = ["Apache-2.0"]
+}
+
 
 android {
     compileSdkVersion 27
-
-
-
     defaultConfig {
         minSdkVersion 15
         targetSdkVersion 27
@@ -34,7 +68,9 @@ dependencies {
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
     implementation 'com.squareup.okhttp:okhttp:2.7.5'
-}
 
+}
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+apply from: 'https://raw.githubusercontent.com/numetriclabz/jcenter/master/installv.gradle'
+apply from: 'https://raw.githubusercontent.com/numetriclabz/jcenter/master/bintrayv.gradle'
