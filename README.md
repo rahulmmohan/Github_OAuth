@@ -1,20 +1,22 @@
 # Github OAuth Client Library - Android
 
 # Setup
-## 1. Include in your project
+## Include in your project
 
 ### Using Gradle
 The **Github-OAuth** library is pushed to jcenter, so you need to add the following dependency to your app's `build.gradle`.
 
 ```gradle
-implementation 'com.github.rahul:github-oauth:1.0'
+dependencies {
+  implementation 'com.github.rahul:github-oauth:1.0'
+}
 ```
 
 ### As a module
 If you can't include it as gradle dependency, you can also download this GitHub repo and copy the library folder to your project.
 
 
-## 2. Usage
+## Usage
 ### Obtaining GithubAuthenticator instance
 ```kotlin
 val githubAuthenticatorBuilder = GithubAuthenticator.builder(this)
@@ -46,11 +48,11 @@ githubAuthenticator.authenticate()
 ```
 Authenticate will open a new Dialog Fragment with webview and user token will be returned on callback
 
-### Enable log
+### Enable logs
 ```kotlin
 githubAuthenticatorBuilder.debug(true)
 ```
-### scope can also be defined (optional)
+### Scope can also be defined (optional)
 ```kotlin
 githubAuthenticatorBuilder.scopeList(arrayListOf("scope1", "scope2"))
 ```
