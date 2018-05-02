@@ -1,14 +1,12 @@
-package com.github.rahul.github_oauth
+package com.github.rahul.githuboauth
 
-import android.app.Activity
 import android.content.Context
 import android.os.Bundle
 import android.support.annotation.MainThread
 import android.support.v7.app.AppCompatActivity
+import java.util.*
 
-import java.util.ArrayList
-
-class GithubAuthenticator(val context: Context) {
+class GithubAuthenticator(private val context: Context) {
     private var authFragment: GithubOAuthDialogFragment? = null
     /**
      * This method will execute the instance created. The activity of login will be launched and
@@ -21,14 +19,14 @@ class GithubAuthenticator(val context: Context) {
     }
 
     companion object {
-        val GITHUB_URL = "https://github.com/login/oauth/authorize"
-        val GITHUB_OAUTH = "https://github.com/login/oauth/access_token"
+        const val GITHUB_URL = "https://github.com/login/oauth/authorize"
+        const val GITHUB_OAUTH = "https://github.com/login/oauth/access_token"
         fun builder(context: Context): Builder {
             return Builder(context)
         }
     }
 
-    class Builder(val context: Context) {
+    class Builder(private val context: Context) {
 
         private var mClientId: String? = null
         private var mClientSecret: String? = null
@@ -80,10 +78,10 @@ class GithubAuthenticator(val context: Context) {
         }
 
         /**
-         * Callback of decoding process
+         * Callback of success process
          *
          * @param callback Callback
-         * @see DecodeCallback
+         * @see SuccessCallback
          */
         @MainThread
         fun onSuccess(callback: SuccessCallback?): Builder {
@@ -96,7 +94,6 @@ class GithubAuthenticator(val context: Context) {
          * If not set, an exception will be thrown when error will occur.
          *
          * @param callback Callback
-         * @see ErrorCallback.SUPPRESS
          *
          * @see ErrorCallback
          */
@@ -112,7 +109,7 @@ class GithubAuthenticator(val context: Context) {
          * @param scopeList list of scopes as defined
          * @return comma separated list of scopes
          */
-        fun getScopeFromList(scopeList: ArrayList<String>?): String {
+        private fun getScopeFromList(scopeList: ArrayList<String>?): String {
             var scopeString = ""
 
             for (scope in scopeList!!) {

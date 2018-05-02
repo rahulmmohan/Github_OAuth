@@ -1,9 +1,9 @@
-package com.github.rahul.github_oauth
+package com.github.rahul.githuboauth
 
 import android.support.annotation.WorkerThread
 
 interface SuccessCallback {
 
     @WorkerThread
-    abstract fun onSuccess(result: String)
+    fun onSuccess(result: String)
 }

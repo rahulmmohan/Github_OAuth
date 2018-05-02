@@ -1,10 +1,9 @@
-package com.github.rahul.github_oauth
+package com.github.rahul.githuboauth
 
 import android.annotation.SuppressLint
 import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.DialogFragment
-import android.support.v4.app.Fragment
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -12,19 +11,12 @@ import android.view.ViewGroup
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import com.squareup.okhttp.*
-import kotlinx.android.synthetic.main.fragment_github_oauth.*
 import kotlinx.android.synthetic.main.fragment_github_oauth.view.*
 import org.json.JSONException
 import org.json.JSONObject
 import java.io.IOException
 
 
-/**
- * A simple [Fragment] subclass.
- * Activities that contain this fragment must implement the
- * [GithubOAuthDialogFragment.OnFragmentInteractionListener] interface
- * to handle interaction events.
- */
 class GithubOAuthDialogFragment : DialogFragment() {
     private var CLIENT_ID = ""
     private var CLIENT_SECRET = ""
@@ -87,7 +79,7 @@ class GithubOAuthDialogFragment : DialogFragment() {
                     val code = Uri.parse(url).getQueryParameter("code")
                     if (code != null) {
                         view.webView.visibility = View.GONE
-                        getOAuthTokenFromCode(view,code)
+                        getOAuthTokenFromCode(view, code)
                         if (debug) {
                             Log.d(TAG, "code fetched is: $code")
                         }
@@ -104,7 +96,7 @@ class GithubOAuthDialogFragment : DialogFragment() {
 
     }
 
-    fun getOAuthTokenFromCode(view: View,code: String) {
+    fun getOAuthTokenFromCode(view: View, code: String) {
         view.progressView.visibility = View.VISIBLE
         val client = OkHttpClient()
         val url = HttpUrl.parse(GithubAuthenticator.GITHUB_OAUTH).newBuilder()
@@ -112,11 +104,11 @@ class GithubOAuthDialogFragment : DialogFragment() {
         url.addQueryParameter("client_secret", CLIENT_SECRET)
         url.addQueryParameter("code", code)
 
-        val url_oauth = url.build().toString()
+        val urlOauth = url.build().toString()
 
         val request = Request.Builder()
                 .header("Accept", "application/json")
-                .url(url_oauth)
+                .url(urlOauth)
                 .build()
 
         client.newCall(request).enqueue(object : Callback {
@@ -134,12 +126,12 @@ class GithubOAuthDialogFragment : DialogFragment() {
             override fun onResponse(response: Response) {
 
                 if (response.isSuccessful) {
-                    val JsonData = response.body().string()
+                    val jsonData = response.body().string()
                     if (debug) {
-                        Log.d(TAG, "response is: $JsonData")
+                        Log.d(TAG, "response is: $jsonData")
                     }
                     try {
-                        val jsonObject = JSONObject(JsonData)
+                        val jsonObject = JSONObject(jsonData)
                         val authToken = jsonObject.getString("access_token")
                         if (mSuccessCallback != null) {
                             mSuccessCallback!!.onSuccess(authToken)

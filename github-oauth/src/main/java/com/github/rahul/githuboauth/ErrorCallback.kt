@@ -1,9 +1,9 @@
-package com.github.rahul.github_oauth
+package com.github.rahul.githuboauth
 
 import android.support.annotation.WorkerThread
 
 interface ErrorCallback {
 
     @WorkerThread
-    abstract fun onError(error: Exception)
+    fun onError(error: Exception)
 }

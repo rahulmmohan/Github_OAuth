@@ -3,9 +3,9 @@ package oauth.github.sample.app.github_oauth
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
-import com.github.rahul.github_oauth.ErrorCallback
-import com.github.rahul.github_oauth.GithubAuthenticator
-import com.github.rahul.github_oauth.SuccessCallback
+import com.github.rahul.githuboauth.ErrorCallback
+import com.github.rahul.githuboauth.GithubAuthenticator
+import com.github.rahul.githuboauth.SuccessCallback
 
 class MainActivity : AppCompatActivity() {
 
@@ -15,7 +15,7 @@ class MainActivity : AppCompatActivity() {
         val build = GithubAuthenticator.builder(this)
                 .clientId("fbd747cbb00a75eda14f")
                 .clientSecret("38f6c51cf1d6b9df16603a03d16a8a9da970970b")
-                .scopeList(arrayListOf("gist","repo"))
+                .scopeList(arrayListOf("gist", "repo"))
                 .debug(true)
                 .onSuccess(object : SuccessCallback {
                     override fun onSuccess(result: String) {

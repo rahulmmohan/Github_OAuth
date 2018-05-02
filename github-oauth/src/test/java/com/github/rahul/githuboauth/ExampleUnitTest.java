@@ -1,4 +1,4 @@
-package com.github.rahul.github_oauth;
+package com.github.rahul.githuboauth;
 
 import org.junit.Test;
 
