@@ -12,9 +12,9 @@ class GithubAuthenticator(val context: Context) {
     private var authFragment: GithubOAuthDialogFragment? = null
     /**
      * This method will execute the instance created. The activity of login will be launched and
-     * it will return a result after finishing its execution. The result will be one of the constants
-     * hold in the class [ResultCode]
-     * client_id, client_secret, package name and activity fully qualified are required
+     * it will return a result after finishing its execution. The result will be one of the callback
+     * [SuccessCallback] or [ErrorCallback]
+     * client_id, client_secret are required
      */
     fun authenticate() {
         authFragment?.show((context as AppCompatActivity).supportFragmentManager, "Auth")
@@ -23,10 +23,6 @@ class GithubAuthenticator(val context: Context) {
     companion object {
         val GITHUB_URL = "https://github.com/login/oauth/authorize"
         val GITHUB_OAUTH = "https://github.com/login/oauth/access_token"
-        val TOKEN = "TOKEN"
-        val REQUEST_CODE = 1000
-        val SUCCESS = -1
-        val ERROR = 0
         fun builder(context: Context): Builder {
             return Builder(context)
         }
@@ -42,6 +38,7 @@ class GithubAuthenticator(val context: Context) {
                 field = ArrayList()
                 field = scopeList
             }
+        private var mHasScopes = false
         private var clearBeforeLaunch: Boolean = false
         private var mSuccessCallback: SuccessCallback? = null
         private var mErrorCallback: ErrorCallback? = null
@@ -64,6 +61,9 @@ class GithubAuthenticator(val context: Context) {
 
         fun scopeList(scopeList: ArrayList<String>): Builder {
             mScopeList = scopeList
+            if (mScopeList != null && mScopeList!!.isNotEmpty()) {
+                mHasScopes = true
+            }
             return this
         }
 
@@ -106,10 +106,34 @@ class GithubAuthenticator(val context: Context) {
             return this
         }
 
+        /**
+         * Generate a comma separated list of scopes out of the
+         *
+         * @param scopeList list of scopes as defined
+         * @return comma separated list of scopes
+         */
+        fun getScopeFromList(scopeList: ArrayList<String>?): String {
+            var scopeString = ""
+
+            for (scope in scopeList!!) {
+                if (scopeString != "") {
+                    scopeString += ","
+                }
+
+                scopeString += scope
+            }
+            return scopeString
+        }
+
         fun build(): GithubAuthenticator {
             val args = Bundle()
             args.putString("id", mClientId)
             args.putString("secret", mClientSecret)
+            if (mHasScopes) {
+                args.putString("scope", getScopeFromList(mScopeList))
+            }
+            args.putBoolean("debug", mIsDebug)
+
             val authFragment = GithubOAuthDialogFragment.newInstance(args)
             authFragment.mSuccessCallback = mSuccessCallback
             authFragment.mErrorCallback = mErrorCallback

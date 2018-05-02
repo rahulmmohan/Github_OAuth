@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import com.squareup.okhttp.*
+import kotlinx.android.synthetic.main.fragment_github_oauth.*
 import kotlinx.android.synthetic.main.fragment_github_oauth.view.*
 import org.json.JSONException
 import org.json.JSONObject
@@ -25,11 +26,10 @@ import java.io.IOException
  * to handle interaction events.
  */
 class GithubOAuthDialogFragment : DialogFragment() {
-    private var mListener: OnFragmentInteractionListener? = null
-
-    var CLIENT_ID = ""
-    var CLIENT_SECRET = ""
-    var debug = true
+    private var CLIENT_ID = ""
+    private var CLIENT_SECRET = ""
+    private var debug = false
+    private var scope = ""
     private val TAG = "github-oauth"
     var mSuccessCallback: SuccessCallback? = null
     var mErrorCallback: ErrorCallback? = null
@@ -48,6 +48,9 @@ class GithubOAuthDialogFragment : DialogFragment() {
         super.onCreate(savedInstanceState)
         CLIENT_ID = arguments!!.getString("id", "")
         CLIENT_SECRET = arguments!!.getString("secret", "")
+        scope = arguments!!.getString("scope", "")
+        debug = arguments!!.getBoolean("debug", false)
+
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -59,8 +62,11 @@ class GithubOAuthDialogFragment : DialogFragment() {
     }
 
     private fun buildURL(view: View) {
-        var url_load = "${GithubAuthenticator.GITHUB_URL}?client_id=$CLIENT_ID"
-        view.webView.loadUrl(url_load)
+        var urlToLoad = "${GithubAuthenticator.GITHUB_URL}?client_id=$CLIENT_ID"
+        if (scope.isNotEmpty()) {
+            urlToLoad += "&scope=$scope"
+        }
+        view.webView.loadUrl(urlToLoad)
     }
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -81,7 +87,7 @@ class GithubOAuthDialogFragment : DialogFragment() {
                     val code = Uri.parse(url).getQueryParameter("code")
                     if (code != null) {
                         view.webView.visibility = View.GONE
-                        getOAuthTokenFromCode(code)
+                        getOAuthTokenFromCode(view,code)
                         if (debug) {
                             Log.d(TAG, "code fetched is: $code")
                         }
@@ -98,7 +104,8 @@ class GithubOAuthDialogFragment : DialogFragment() {
 
     }
 
-    fun getOAuthTokenFromCode(code: String) {
+    fun getOAuthTokenFromCode(view: View,code: String) {
+        view.progressView.visibility = View.VISIBLE
         val client = OkHttpClient()
         val url = HttpUrl.parse(GithubAuthenticator.GITHUB_OAUTH).newBuilder()
         url.addQueryParameter("client_id", CLIENT_ID)
@@ -114,11 +121,13 @@ class GithubOAuthDialogFragment : DialogFragment() {
 
         client.newCall(request).enqueue(object : Callback {
             override fun onFailure(request: Request?, exp: IOException) {
-                //finishActivityWithResult(Constants.ERROR, null)
-                mErrorCallback!!.onError(exp)
+                if (mErrorCallback != null) {
+                    mErrorCallback!!.onError(exp)
+                }
                 if (debug) {
                     Log.d(TAG, "IOException: " + exp.message)
                 }
+                dismiss()
             }
 
             @Throws(IOException::class)
@@ -132,37 +141,34 @@ class GithubOAuthDialogFragment : DialogFragment() {
                     try {
                         val jsonObject = JSONObject(JsonData)
                         val authToken = jsonObject.getString("access_token")
-                        mSuccessCallback!!.onSuccess(authToken)
+                        if (mSuccessCallback != null) {
+                            mSuccessCallback!!.onSuccess(authToken)
+                        }
                         if (debug) {
                             Log.d(TAG, "token is: $authToken")
                         }
 
                     } catch (exp: JSONException) {
-                        mErrorCallback!!.onError(exp)
-                        // finishActivityWithResult(Constants.ERROR, null)
+                        if (mErrorCallback != null) {
+                            mErrorCallback!!.onError(exp)
+                        }
                         if (debug) {
                             Log.d(TAG, "json exception: " + exp.message)
                         }
                     }
 
                 } else {
-                    mErrorCallback!!.onError(Exception(response.message()))
-                    // finishActivityWithResult(Constants.ERROR, null)
+                    if (mErrorCallback != null) {
+                        mErrorCallback!!.onError(Exception(response.message()))
+                    }
                     if (debug) {
                         Log.d(TAG, "onResponse: not success: " + response.message())
                     }
                 }
+                dismiss()
             }
         })
     }
-
-
-    fun onButtonPressed(uri: Uri) {
-        if (mListener != null) {
-            mListener!!.onFragmentInteraction(uri)
-        }
-    }
-
 
 
     override fun onDetach() {
@@ -171,19 +177,6 @@ class GithubOAuthDialogFragment : DialogFragment() {
         mSuccessCallback = null
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     *
-     *
-     * See the Android Training lesson [Communicating with Other Fragments](http://developer.android.com/training/basics/fragments/communicating.html) for more information.
-     */
-    interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        fun onFragmentInteraction(uri: Uri)
-    }
 
     companion object {
         /**

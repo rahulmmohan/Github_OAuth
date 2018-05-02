@@ -15,6 +15,8 @@ class MainActivity : AppCompatActivity() {
         val build = GithubAuthenticator.builder(this)
                 .clientId("fbd747cbb00a75eda14f")
                 .clientSecret("38f6c51cf1d6b9df16603a03d16a8a9da970970b")
+                .scopeList(arrayListOf("gist","repo"))
+                .debug(true)
                 .onSuccess(object : SuccessCallback {
                     override fun onSuccess(result: String) {
                         runOnUiThread {
