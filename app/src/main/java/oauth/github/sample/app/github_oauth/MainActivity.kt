@@ -1,11 +1,12 @@
 package oauth.github.sample.app.github_oauth
 
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
 import android.widget.Toast
 import com.github.rahul.githuboauth.ErrorCallback
 import com.github.rahul.githuboauth.GithubAuthenticator
 import com.github.rahul.githuboauth.SuccessCallback
+import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
 
@@ -35,7 +36,10 @@ class MainActivity : AppCompatActivity() {
                 })
                 .build()
 
-        build.authenticate()
+        login.setOnClickListener {
+            build.authenticate()
+        }
+
 
     }
 

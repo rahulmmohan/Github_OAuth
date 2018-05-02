@@ -1,6 +1,7 @@
 package com.github.rahul.githuboauth
 
 import android.annotation.SuppressLint
+import android.app.Dialog
 import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.DialogFragment
@@ -162,12 +163,18 @@ class GithubOAuthDialogFragment : DialogFragment() {
         })
     }
 
-
-    override fun onDetach() {
-        super.onDetach()
-        mErrorCallback = null
-        mSuccessCallback = null
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        return object : Dialog(activity!!, theme) {
+            override fun onBackPressed() {
+                if (view!!.webView.canGoBack()) {
+                    view!!.webView.goBack()
+                } else {
+                    dismiss()
+                }
+            }
+        }
     }
+
 
 
     companion object {
