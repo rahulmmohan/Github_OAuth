@@ -14,6 +14,7 @@ The **Github-OAuth** library is pushed to jcenter, so you need to add the follow
 ```gradle
 dependencies {
   implementation 'com.github.rahul:github-oauth:1.0'
+  implementation 'com.squareup.okhttp3:okhttp:3.8.0'
 }
 ```
 
